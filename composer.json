@@ -1,0 +1,17 @@
+{
+    "name": "Simple PHP Router",
+    "description": "A real simple PHP Router",
+    "authors": [
+        {
+            "name": "Michelle Torres",
+            "email": "hola@michelletorres.mx",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SimplePHPRouter\\": "src/",
+            "Controllers\\": "Controllers/"
+        }
+    }
+}
