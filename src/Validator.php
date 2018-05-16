@@ -1,6 +1,19 @@
 <?php
+/**
+ * Simple PHP Router - A real simple PHP Router for PHP 7.1+
+ *
+ * @author      Michelle Torres <hola@michelletorres.mx>
+ * @link        https://github.com/nmicht/SimplePHPRouter
+ * @license     MIT
+ */
+
 namespace SimplePHPRouter;
 
+/**
+ * Validator
+ *
+ * Class to keep the regex rules for route validation.
+ */
 class Validator
 {
     /**

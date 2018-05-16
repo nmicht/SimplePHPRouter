@@ -1,9 +1,23 @@
 <?php
+/**
+ * Simple PHP Router - A real simple PHP Router for PHP 7.1+
+ *
+ * @author      Michelle Torres <hola@michelletorres.mx>
+ * @link        https://github.com/nmicht/SimplePHPRouter
+ * @license     MIT
+ */
+
 namespace SimplePHPRouter;
 
 use SimplePHPRouter\Validator;
 use Exception;
 
+/**
+ * Route
+ *
+ * Class to hanlde the rules for each route.
+ * Regex, path, controller, method and all the information related to the Route.
+ */
 class Route
 {
     /**
@@ -25,12 +39,6 @@ class Route
     private $method = '';
 
     /**
-     * The name of this route, used for reversed routing
-     * @var string
-     */
-    private $name = '';
-
-    /**
      * The callback method to execute when the route is matched
      * @var callable
      */
@@ -42,18 +50,15 @@ class Route
      * @param callable $callback
      * @param string $url
      * @param string|array $method
-     * @param string $name
      */
     public function __construct(
         callable $callback,
         string $url = null,
-        string $method = null,
-        string $name = null
+        string $method = null
     ) {
         $this->setCallback($callback);
         $this->setUrl($url);
         $this->setMethod($method);
-        $this->setName($name);
         $this->compileRoute();
     }
 
@@ -131,29 +136,6 @@ class Route
             throw new Exception('Expected an array as http method. Got a '. gettype($method));
         }
         $this->method = $method ?? 'GET';
-
-        return $this;
-    }
-
-    /**
-     * Get the route name.
-     *
-     * @return string
-     */
-    public function getName() : string
-    {
-        return $this->name;
-    }
-
-    /**
-     * Set the route name
-     *
-     * @param string $name
-     * @return Route
-     */
-    public function setName(string $name = null) : Route
-    {
-        $this->name = $name;
 
         return $this;
     }

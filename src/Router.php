@@ -1,8 +1,21 @@
 <?php
+/**
+ * Simple PHP Router - A real simple PHP Router for PHP 7.1+
+ *
+ * @author      Michelle Torres <hola@michelletorres.mx>
+ * @link        https://github.com/nmicht/SimplePHPRouter
+ * @license     MIT
+ */
+
 namespace SimplePHPRouter;
 
 use SimplePHPRouter\Request;
 
+/**
+ * Router
+ *
+ * The class to handle the functionality.
+ */
 class Router
 {
     /**
@@ -13,12 +26,9 @@ class Router
     private $routes = [];
 
     /**
-     * @TODO change to use a DS collection
-     * Array to store named routes in, used for reverse routing.
-     * @var array
+     * The Request object
+     * @var Request
      */
-    private $namedRoutes = [];
-
     public $request;
 
     /**
@@ -29,23 +39,6 @@ class Router
     public function __construct(array $routeCollection = [])
     {
         $this->routes = $routeCollection;
-        $this->distributeRoutes();
-    }
-
-    /**
-     * Distribute routes to have the named routes in a different collection.
-     * That collection is used to reverse routing.
-     *
-     * @return void
-     */
-    private function distributeRoutes() : void
-    {
-        foreach ($this->routes as $route) {
-            $name = $route->getName();
-            if (null !== $name) {
-                $this->namedRoutes[$name] = $route;
-            }
-        }
     }
 
     /**
@@ -105,6 +98,12 @@ class Router
         return null;
     }
 
+    /**
+     * Load routes from yaml file.
+     *
+     * @param  string $path
+     * @return Router
+     */
     public static function loadFromFile(string $path = 'routes.yaml') : Router
     {
         // @TODO add here all the logic to read the yaml
