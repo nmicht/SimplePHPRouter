@@ -14,6 +14,7 @@ final class RouteTest extends TestCase
     {
         $this->url = '/news/[s:slug]';
         $this->method = 'GET';
+        $this->regex = '`^/news(?:/(?P<slug>[0-9A-Za-z-_\-]++))$`';
 
         $this->routeWithParameters = new Route(
             $this->url,
@@ -61,9 +62,14 @@ final class RouteTest extends TestCase
         self::assertEquals('POST', $this->routeWithParameters->getMethod());
     }
 
-    public function testSetMethodValid()
+    public function testSetMethodInvalid()
     {
+        self::expectException('Exception');
         $this->routeWithParameters->setMethod('fail');
-        self::expectException(Exception::class);
+    }
+
+    public function testGetRegex()
+    {
+        self::assertEquals($this->regex, $this->routeWithParameters->getRegex());
     }
 }
