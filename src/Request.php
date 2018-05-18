@@ -115,7 +115,7 @@ class Request
      */
     private function setQueryString() : Request
     {
-        $this->queryString = $_SERVER['QUERY_STRING'];
+        $this->queryString = $_SERVER['QUERY_STRING'] ?? null;
 
         return $this;
     }
