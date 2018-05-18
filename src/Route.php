@@ -133,9 +133,14 @@ class Route
     {
         if ($method !== null && !is_string($method)) {
             // @TODO create a specific Exception
-            throw new Exception('Expected an array as http method. Got a '. gettype($method));
+            throw new Exception('Expected an string as http method. Got a '. gettype($method));
         }
-        $this->method = $method ?? 'GET';
+
+        if ($method !== null && !in_array(strtoupper($method), Validator::HTTP_METHODS)) {
+            throw new Exception('The HTTP method is not allowed');
+        }
+
+        $this->method = strtoupper($method ?? 'GET');
 
         return $this;
     }

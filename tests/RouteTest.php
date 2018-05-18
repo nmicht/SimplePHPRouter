@@ -8,10 +8,13 @@ final class RouteTest extends TestCase
 {
     private $routeWithParameters;
     private $url;
+    private $method;
 
     protected function setUp()
     {
         $this->url = '/news/[s:slug]';
+        $this->method = 'GET';
+
         $this->routeWithParameters = new Route(
             $this->url,
             [\SimplePHPRouterTest\TestController::class, 'page']
@@ -41,43 +44,26 @@ final class RouteTest extends TestCase
         self::assertEquals('/', $this->routeWithParameters->getUrl());
     }
 
-    // public function testGetMethods()
-    // {
-    //     self::assertEquals(array('GET'), $this->routeWithParameters->getMethods());
-    // }
-    //
-    // public function testSetMethods()
-    // {
-    //     $this->routeWithParameters->setMethods(array('POST'));
-    //     self::assertEquals(array('POST'), $this->routeWithParameters->getMethods());
-    //     $this->routeWithParameters->setMethods(array('GET', 'POST', 'PUT', 'DELETE'));
-    //     self::assertEquals(array('GET', 'POST', 'PUT', 'DELETE'), $this->routeWithParameters->getMethods());
-    // }
-    //
-    // public function testGetTarget()
-    // {
-    //     self::assertEquals('thisIsAString', $this->routeWithParameters->getTarget());
-    // }
-    //
-    // public function testSetTarget()
-    // {
-    //     $this->routeWithParameters->setTarget('ThisIsAnotherString');
-    //     self::assertEquals('ThisIsAnotherString', $this->routeWithParameters->getTarget());
-    // }
-    //
-    // public function testGetName()
-    // {
-    //     self::assertEquals('page', $this->routeWithParameters->getName());
-    // }
-    //
-    // public function testSetName()
-    // {
-    //     $this->routeWithParameters->setName('pageroute');
-    //     self::assertEquals('pageroute', $this->routeWithParameters->getName());
-    // }
-    //
-    // public function testGetAction()
-    // {
-    //     self::assertEquals('page', $this->routeWithParameters->getAction());
-    // }
+    public function testGetMethod()
+    {
+        self::assertEquals($this->method, $this->routeWithParameters->getMethod());
+    }
+
+    public function testSetMethodDefault()
+    {
+        $this->routeWithParameters->setMethod();
+        self::assertEquals('GET', $this->routeWithParameters->getMethod());
+    }
+
+    public function testSetMethodPost()
+    {
+        $this->routeWithParameters->setMethod('post');
+        self::assertEquals('POST', $this->routeWithParameters->getMethod());
+    }
+
+    public function testSetMethodValid()
+    {
+        $this->routeWithParameters->setMethod('fail');
+        self::expectException(Exception::class);
+    }
 }

@@ -41,4 +41,15 @@ class Validator
         '**' => '.++',
         ''   => '[^/\.]++'
     ];
+
+    /**
+     * The available http methods.
+     * @var array
+     */
+    const HTTP_METHODS = [
+        'GET',
+        'POST',
+        'PUT',
+        'DELETE',
+    ];
 }
