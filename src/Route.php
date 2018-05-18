@@ -52,12 +52,12 @@ class Route
      * @param string|array $method
      */
     public function __construct(
-        callable $callback,
         string $url = null,
+        callable $callback,
         string $method = null
     ) {
-        $this->setCallback($callback);
         $this->setUrl($url);
+        $this->setCallback($callback);
         $this->setMethod($method);
         $this->compileRoute();
     }
@@ -190,7 +190,6 @@ class Route
             },
             $route
         );
-
         $this->regex = "`^$route$`";
 
         return $this;

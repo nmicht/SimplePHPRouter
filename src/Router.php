@@ -55,15 +55,15 @@ class Router
 
     /**
      * Add new route to the collection
+     *
      * @param  string   $url
      * @param  callable $callback
-     * @param  string   $name
      * @param  string   $method
      * @return Router
      */
-    public function addRoute(string $url, callable $callback, string $name = null, string $method = null) : Router
+    public function addRoute(string $url, callable $callback, string $method = null) : Router
     {
-        $r = new Route($callback, $url, $method, $name);
+        $r = new Route($url, $callback, $method);
         $this->routes[] = $r;
 
         return $this;
@@ -79,7 +79,7 @@ class Router
         // @TODO Change for substring validations to avoid regex as much as
         // possible. Regex is so expensive.
         foreach ($this->routes as $route) {
-            if (!preg_match($route->getRegex(), $this->request->getUrl(), $params)) {
+            if (!preg_match($route->getRegex(), $this->request->getPath(), $params)) {
                 continue;
             }
 
