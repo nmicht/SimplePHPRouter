@@ -106,7 +106,7 @@ class Route
      */
     public function setUrl(string $url = null) : Route
     {
-        $this->url = $url;
+        $this->url = $url ?? '/';
 
         return $this;
     }
