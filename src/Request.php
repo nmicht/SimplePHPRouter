@@ -26,11 +26,11 @@ class Request
     private $method = '';
 
     /**
-     * The requested url.
+     * The requested path.
      *
      * @var string
      */
-    private $url = '';
+    private $path = '';
 
     /**
      * The request query string.
@@ -53,7 +53,7 @@ class Request
     public function __construct()
     {
         $this->setMethod()
-             ->setUrl()
+             ->setPath()
              ->setQueryString()
              ->setParams();
     }
@@ -81,30 +81,28 @@ class Request
     }
 
     /**
-     * Get the requested url.
+     * Get the requested path.
      *
      * @return string
      */
-    public function getUrl() : string
+    public function getPath() : string
     {
-        return $this->url;
+        return $this->path;
     }
 
     /**
-     * Set the requested url.
+     * Set the requested path.
      *
      * @return Request
      */
-    private function setUrl() : Request
+    private function setPath() : Request
     {
-        $this->url = $_SERVER['REQUEST_URI'];
+        $path = parse_url($_SERVER['REQUEST_URI']);
+        $this->path = $path['path'];
 
-        if (($pos = strpos($this->url, '?')) !== false) {
-            $this->url = substr($this->url, 0, $pos);
-        }
-
-        if ($this->url !== '/') {
-            $this->url = rtrim($this->url, '/');
+        // Remove trailing slash on paths
+        if ($this->path !== '/') {
+            $this->path = rtrim($this->path, '/');
         }
 
         return $this;
@@ -117,9 +115,7 @@ class Request
      */
     private function setQueryString() : Request
     {
-        if (($pos = strpos($_SERVER['REQUEST_URI'], '?')) !== false) {
-            $this->queryString = substr($_SERVER['REQUEST_URI'], $pos + 1);
-        }
+        $this->queryString = $_SERVER['QUERY_STRING'];
 
         return $this;
     }
@@ -135,19 +131,20 @@ class Request
     }
 
     /**
-     * Set the requested params from queryString in array with key-value.
-     * @todo include params from post and body
+     * Set the requested params from post and get..
      *
      * @return Request
      */
     private function setParams() : Request
     {
-        if ($this->queryString) {
-            $queries = explode('&', $this->queryString);
-            foreach ($queries as $query) {
-                $key_value = explode('=', $query);
-                $this->addParam($key_value[0], $key_value[1] ?? null);
-            }
+        $get = filter_input_array(INPUT_GET);
+        foreach ($_GET as $key => $value) {
+            $this->addParam($key, $value ?? null, true);
+        }
+
+        $post = filter_input_array(INPUT_POST);
+        foreach ($_POST as $key => $value) {
+            $this->addParam($key, $value ?? null, true);
         }
 
         return $this;
@@ -158,17 +155,18 @@ class Request
      *
      * @param  string  $key
      * @param  string  $value
-     * @param  boolean $force Define if the addition must be forced replacing
+     * @param  boolean $force Define if the addition must be forced overiding
      * previous param.
      *
      * @return Request
      */
     public function addParam(string $key, string $value = null, bool $force = false) : Request
     {
-        if (!$force && isset($this->params[$key])) {
+        if (!$force && array_key_exists($key, $this->params)) {
             // @TODO create specific exception
             throw new Exception("Param already defined", 1);
         }
+
         $this->params[$key] = $value ?? '';
 
         return $this;
