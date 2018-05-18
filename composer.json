@@ -13,5 +13,8 @@
             "SimplePHPRouter\\": "src/",
             "Controllers\\": "Controllers/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.1"
     }
 }
