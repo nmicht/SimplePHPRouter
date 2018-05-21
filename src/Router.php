@@ -70,6 +70,15 @@ class Router
     }
 
     /**
+     * Get Routes
+     * @return array
+     */
+    public function getRoutes() : array
+    {
+        return $this->routes;
+    }
+
+    /**
      * Preg validation for routing.
      *
      * @return Route

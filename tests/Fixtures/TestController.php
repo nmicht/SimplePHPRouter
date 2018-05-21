@@ -3,8 +3,8 @@ namespace SimplePHPRouterTest;
 
 final class TestController
 {
-    public function page()
+    public function page($req)
     {
-        return func_get_args();
+        return $req;
     }
 }
