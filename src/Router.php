@@ -108,6 +108,55 @@ class Router
     }
 
     /**
+     * Get the different routes in parts
+     *
+     * @return array
+     * @throws \exception
+     */
+    private static function getRouteParts(): array
+    {
+        $url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        $url = parse_url($url);
+
+        $urlParts = array_filter(explode('/', $url['path']));
+
+        return $urlParts;
+    }
+
+    /**
+     * Get the possible child routes based in the current url
+     *
+     * @param $homepageText
+     * @return array
+     * @throws \exception
+     */
+    public static function getChildRoutes(string $homepageText = 'Home'): array
+    {
+        $routes = [];
+        $currentRoute = [];
+        $urlParts = self::getRouteParts();
+        unset($urlParts[0]);
+
+        //Adding home route
+        $routes[] = [
+            'url'  => '/',
+            'text' => $homepageText,
+        ];
+
+        // Build remaining routes
+        foreach ($urlParts as $urlPart) {
+            $currentRoute[] = $urlPart;
+            $routes[] = [
+                'url'  => '/' . implode('/', $currentRoute) . '/',
+                'text' => ucfirst(str_replace('-', ' ', $urlPart)),
+            ];
+        }
+
+        return $routes;
+    }
+
+    /**
      * Load routes from yaml file.
      *
      * @param  string $path
