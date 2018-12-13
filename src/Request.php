@@ -47,6 +47,34 @@ class Request
     private $params = [];
 
     /**
+     * The requested host
+     *
+     * @var string
+     */
+    private $host = '';
+
+    /**
+     * The requested protocol
+     *
+     * @var string
+     */
+    private $protocol = '';
+
+    /**
+     * The requested url
+     *
+     * @var string
+     */
+    private $url = '';
+
+    /**
+     * The requested subdomain
+     *
+     * @var string
+     */
+    private $subdomain = '';
+
+    /**
      * Constructor
      * Initialize the request object using the own setters to validate.
      */
@@ -55,6 +83,9 @@ class Request
         $this->setMethod()
              ->setPath()
              ->setQueryString()
+             ->setHost()
+             ->setProtocol()
+             ->setSubdomain()
              ->setParams();
     }
 
@@ -131,20 +162,111 @@ class Request
     }
 
     /**
+     * Set the requested host
+     *
+     * @return Request
+     */
+    private function setHost() : Request
+    {
+        $this->host = $_SERVER['HTTP_HOST'];
+        return $this;
+    }
+
+    /**
+     * Get the requested host.
+     *
+     * @return string
+     */
+    public function getHost() : string
+    {
+        return $this->host;
+    }
+
+    /**
+     * Set the requested protocol
+     *
+     * @return Request
+     */
+    private function setProtocol() : Request
+    {
+        if ((! empty($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https') ||
+            (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ||
+            (! empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443')
+        ) {
+            $this->protocol = 'https';
+        } else {
+            $this->protocol = 'http';
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the requested protocol.
+     *
+     * @return string
+     */
+    public function getProtocol() : string
+    {
+        return $this->protocol;
+    }
+
+    /**
+     * Set the requested subdomain
+     *
+     * @return Request
+     */
+    private function setSubdomain() : Request
+    {
+        $parts = explode('.', $this->host);
+
+        // Remove host
+        $parts = array_slice($parts, 0, count($parts) - 2);
+
+        // Remove www
+        if (current($parts) === 'www') {
+            array_shift($parts);
+        }
+
+        $this->subdomain = implode('.', $parts);
+
+        return $this;
+    }
+
+    /**
+     * Get the requested subdomain.
+     *
+     * @return string
+     */
+    public function getSubdomain() : string
+    {
+        return $this->subdomain;
+    }
+
+    /**
+     * Get the requested url.
+     *
+     * @return string
+     */
+    public function getUrl() : string
+    {
+        return $this->protocol . '://' . $this->host . $this->path;
+    }
+
+    /**
      * Set the requested params from post and get..
      *
      * @return Request
      */
     private function setParams() : Request
     {
-        $get = filter_input_array(INPUT_GET);
-        foreach ($_GET as $key => $value) {
-            $this->addParam($key, $value ?? null, true);
-        }
+        $request = array_merge(
+            (filter_input_array(INPUT_GET)  ?? []),
+            (filter_input_array(INPUT_POST) ?? [])
+        );
 
-        $post = filter_input_array(INPUT_POST);
-        foreach ($_POST as $key => $value) {
-            $this->addParam($key, $value ?? null, true);
+        foreach ($request as $key => $value) {
+            $this->addParam($key, ($value ?? null), true);
         }
 
         return $this;
