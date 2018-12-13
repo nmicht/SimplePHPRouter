@@ -9,7 +9,7 @@ A real simple PHP Router for PHP 7.1+ inspired on [PHP Router](https://github.co
 - Use URL segments as parameters.
 - Get request data and processes as parameters.
 - Pass parameters to the controller.
-
+- Get child routes from the current url (optional).
 
 ## Usage
 
@@ -82,4 +82,40 @@ class Controller
         // include here all your logic according the route matched.
     }
 }
+```
+
+### Add new custom regular expressions
+
+To make flexible the router, you can create your own regular expressions and add them to the Validator class.  
+Make sure to include a identifier and the regex in the MATCH_TYPES array.
+
+```
+/**
+ * The regex for match types on routes.
+ * @var array
+ */
+const MATCH_TYPES = [
+    'i'  => '[0-9]++',
+    'a'  => '[0-9A-Za-z]++',
+    'h'  => '[0-9A-Fa-f]++',
+    's'  => '[0-9A-Za-z-_\-]++',
+    '*'  => '.+?',
+    '**' => '.++',
+    ''   => '[^/\.]++'
+];
+```
+
+### Get the child routes from the current URL
+
+This will return an array with the different sub routes.
+Similar to the getRouteParts method but this one retrieve more information.
+
+```
+// Get a key -> value array with 'url' and 'name' where name is a properly formatted
+// slug value from the URL
+Router::getChildRoutes();
+
+//We can override the home name by passing a parameter
+Router::getChildRoutes('Home');
+
 ```
