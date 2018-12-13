@@ -204,9 +204,13 @@ class Route
      * Callback execution.
      *
      * @return Response the return value of the callback
+     * @throws Exception when there is not a callable
      */
     public function dispatch(Request $req = null)
     {
+        if (!is_callable($this->callback)) {
+            throw new Exception('Expected a callable for Route. Got an uncallable '. gettype($this->callback));
+        }
         return call_user_func($this->callback, $req);
     }
 }
